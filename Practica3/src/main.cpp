@@ -39,5 +39,3 @@ void loop() {
   Serial.println("this is ESP32 Task");
   delay(1000);
 }
- 
-/* this function will be invoked when additionalTask was created */
