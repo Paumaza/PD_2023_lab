@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>info_comp_wifi.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="informacion-complementaria-wifi">INFORMACION COMPLEMENTARIA WIFI</h1>
+<h2 id="rest-api">REST API</h2>
+<p>Rest API  es la api  <a href="https://www.seobility.net/es/wiki/API_REST"> ver descripcion</a> que se utiliza para las comunicaciones en internet  entre servidores y clientes . Sin embargo antes de describir esta api  , vamos a repasar cual es la base de las comunicaciones de internet , lo que utilizaremos en nuestra practica  de wifi.</p>
+<h2 id="concepto-ip-protocolos-udp-y-tcp-y-protocolo-http">Concepto  IP   protocolos (UDP y TCP)  y protocolo HTTP</h2>
+<h3 id="que-es-una-ip">Que es una IP</h3>
+<p>Una dirección IP es una dirección única que identifica a un dispositivo en Internet o en una red local. IP significa “protocolo de Internet”, que es el conjunto de reglas que rigen el formato de los datos enviados a través de Internet o la red local.</p>
+<p>En esencia, las direcciones IP son el identificador que permite el envío de información entre dispositivos en una red. Contienen información de la ubicación y brindan a los dispositivos acceso de comunicación. Internet necesita una forma de diferenciar entre distintas computadoras, enrutadores y sitios web. Las direcciones IP proporcionan una forma de hacerlo y forman una parte esencial de cómo funciona Internet.</p>
+<p>Una dirección IP es una cadena de números separados por puntos. Las direcciones IP se expresan como un conjunto de cuatro números, por ejemplo, 192.158.1.38. Cada número del conjunto puede variar de 0 a 255. Por lo tanto, el rango completo de direcciones IP va desde 0.0.0.0 hasta 255.255.255.255.</p>
+<p>Las direcciones IP no son aleatorias. La Autoridad de números asignados de Internet (Internet Assigned Numbers Authority, IANA), una división de Internet Corporation para números y nombres asignados (Internet Corporation for Assigned Names and Numbers, ICANN), genera y asigna matemáticamente las direcciones IP. ICANN es una organización sin fines de lucro que se estableció en los Estados Unidos en 1998 para ayudar a mantener la seguridad de Internet y permitir que todos puedan utilizarla. Cada vez que alguien registra un dominio en Internet, debe dirigirse a un registrador del nombre de dominio, quien paga una pequeña tarifa a ICANN para registrarlo.</p>
+<h3 id="que-es-un-puerto-asociado-a-una-ip">Que es un puerto asociado a una IP</h3>
+<p>Para un ordenador conectado a una red con una dirección IP, un puerto es un canal de comunicacion dentro de la misma direccion IP . Los puertos están designados por números, por debajo de 1024 cada puerto está asociado por defecto con un protocolo específico.</p>
+<p>Por ejemplo, el puerto por defecto para el protocolo HTTP es 80 y el puerto por defecto para el protocolo HTTPS es 443, por lo tanto un servidor HTTP espera peticiones en esos puertos. Cada protocolo de internet está asociado con un puerto por defecto: SMTP (25), POP3 (110), IMAP (en-US) (143), IRC (194), y así sucesivamente.</p>
+<p>Los números de puerto se indican mediante una palabra de un procesador de 16 bits (2 bytes), por lo que existen 65536 puertos, numerados del 0 al 65535. Aunque podemos usar cualquiera de ellos para cualquier protocolo, existe una entidad, la IANA, encargada de su asignación, la cual creó tres categorías:</p>
+<p>Puertos bien conocidos: Los puertos inferiores al 1024 son puertos reservados para el sistema operativo y usados por &quot;protocolos bien conocidos&quot; como por ejemplo HTTP (servidor Web), POP3/SMTP (servidor de e-mail) y Telnet. Si queremos usar uno de estos puertos tendremos que arrancar el servicio que los use teniendo permisos de administrador.
+Puertos registrados: Los comprendidos entre 1024 (0400 en hexadecimal) y 49151 (BFFF en hexadecimal) son denominados &quot;registrados&quot; y pueden ser usados por cualquier aplicación. Existe una lista pública en la web del IANA donde se puede ver qué protocolo que usa cada uno de ellos.
+Puertos dinámicos o privados: Los comprendidos entre los números 49152 (C000 en hexadecimal) y 65535 (FFFF en hexadecimal) son denominados dinámicos o privados, normalmente se asignan en forma dinámica a las aplicaciones de clientes al iniciarse la conexión. Se usan en conexiones peer to peer (P2P).</p>
+<h3 id="protocolos-udpip-tcpip">Protocolos UDP/IP TCP/IP</h3>
+<p>La comunicacion entre  elementos de una red sigue la norma del modelo  OSI</p>
+<p>Modelo OSI  El modelo de interconexión de sistemas abiertos (ISO/IEC 7498-1), conocido como “modelo OSI”, (en inglés, Open Systems Interconnection) es un modelo de referencia para los protocolos de la red  https://es.wikipedia.org/wiki/Modelo_OSI</p>
+<h3 id="udp--tcp">UDP  // TCP</h3>
+<p>El Protocolo de datagrama de usuarios, o UDP, es un protocolo de comunicación que se utiliza en Internet para transmisiones sujetas a limitaciones temporales, como la reproducción de vídeo o las búsquedas en DNS. Acelera las comunicaciones al no establecer formalmente una conexión antes de transferir los datos. Esto permite que los datos se transfieran muy rápido, pero también puede hacer que los paquetes se pierdan en tránsito, y crear oportunidades para vulnerabilidades en forma de ataques DDoS.</p>
+<p>Como todos los protocolos de redes, el UDP es un método estandarizado para transferir datos entre dos ordenadores en una red. Comparado con otros protocolos, el UDP realiza este proceso de forma sencilla: envía paquetes (unidades de transmisión de datos) directamente a un ordenador de destino, sin establecer primero una conexión, ni indicar el orden de dichos paquetes, ni comprobar si han llegado como estaba previsto. (Los paquetes UDP se llaman &quot;datagramas&quot;).</p>
+<p>El Protocolo TCP/IP o Transfer Control Protocol consiste en un acuerdo estandarizado sobre el que se realiza la transmisión de datos entre los participantes de una red informática.</p>
+<p>Los programas que forman redes de datos en una red de ordenadores emplean el protocolo TCP para crear conexiones entre sí, de forma que se pueda garantizar el flujo de datos entre las partes. A través de este protocolo se asegura que los datos lleguen a su destino en el mismo orden que se transfirieron y sin errores.</p>
+<p>La inmensa mayoría de comunicaciones que se realizan en internet utilizan el protocolo TCP IP, como es el caso de navegadores, programas de intercambio de ficheros, servicios FTP y un largo etcétera.</p>
+<p>Las principales características del TCP Protocol son:</p>
+<p>Es un protocolo que funciona mediante la conexión mutua entre cliente y servidor.
+Ordena los segmentos provenientes del protocolo IP.
+Monitorea el flujo de los datos y permite evitar la saturación de la red.
+Entrega los datos al protocolo IP en forma de segmentos de longitud variable.
+Permite circular de forma simultánea a la información proveniente de diferentes fuentes.</p>
+<p>El UDP es más rápido pero menos fiable que el TCP, otro protocolo de transporte habitual. En una comunicación TCP, los dos ordenadores comienzan estableciendo una conexión mediante un proceso automatizado llamado &quot;protocolo de enlace&quot;. Un ordenador no transferirá realmente paquetes de datos al otro hasta que no se haya completado el protocolo de enlace.</p>
+<p>Las comunicaciones UDP no pasan por este proceso. En su lugar, un ordenador simplemente puede empezar a enviar datos al otro:</p>
+<p><img src="https://www.cloudflare.com/img/learning/ddos/glossary/user-datagram-protocol-udp/tcp-vs-udp.svg" alt=""></p>
+<p>Además, las comunicaciones TCP indican el orden en que deben recibirse los paquetes de datos, y confirman que los paquetes están llegando según lo previsto. Si un paquete no llega, por la congestión de las redes intermedias, por ejemplo, el TCP exige que se vuelva a enviar. Las comunicaciones UDP no incluyen ninguna de estas funciones.</p>
+<p>Estas diferencias generan algunas ventajas. Ya que el UDP no necesita un &quot;protocolo de enlace&quot; ni comprobar si los datos llegan correctamente, puede transferir datos mucho más rápido que el TCP.</p>
+<p>Sin embargo, esta velocidad genera desventajas. Si un datagrama del UDP se pierde en tránsito, no se volverá a enviar. Como resultado, las aplicaciones que utilizan UDP deben ser capaces de tolerar errores, pérdidas y duplicaciones.</p>
+<p>(Técnicamente, esta pérdida de paquetes no es tanto un defecto del UDP como una consecuencia de cómo se ha diseñado Internet. La mayoría de los enrutadores de red, por su propio diseño, no realizan el ordenamiento de los paquetes y la confirmación de su llegada, porque hacerlo requeriría una cantidad inviable de memoria adicional. El TCP es una forma de llenar este vacío cuando una aplicación lo requiere).</p>
+<p><img src="https://ccnadesdecero.es/wp-content/uploads/2017/11/Campos-encabezado-UDP..png" alt=""></p>
+<p>La tabla identifica y describe los cuatro campos en un encabezado UDP.</p>
+<p>Campo de encabezado UDP	Descripción
+Puerto de origen	Un campo de 16 bits utilizado para identificar la aplicación de origen por número de puerto.
+Puerto de destino	Un campo de 16 bits utilizado para identificar la aplicación de destino por número de puerto.
+Longitud	Un campo de 16 bits que indica la longitud del encabezado del datagrama UDP.
+Suma de comprobación	Un campo de 16 bits utilizado para la verificación de errores del encabezado y los datos del datagrama.</p>
+<p><img src="https://ccnadesdecero.es/wp-content/uploads/2017/11/Encabezado-TCP.png" alt=""></p>
+<p>Componentes del encabezado TCP
+El encabezado del protocolo TCP está formado por una serie de componentes. Veamos lo que significan las diferentes secuencias de bits en un segmento TCP:</p>
+<ul>
+<li>Puerto de origen (16 bits): se refiere la aplicación que está en curso en el dispositivo de origen.</li>
+<li>Puerto de destino (16 bits): relativo la aplicación que está en curso curso en el dispositivo de destino.</li>
+<li>Número de secuencia (32 bits): son las secuencias de números que cliente y servidor se envían para que se pueda establecer la comunicación.</li>
+<li>Número de acuse de recibo (32 bits): indica el número de secuencia del siguiente segmento que se espera recibir.</li>
+<li>Margen de datos (4 bits): determina el lugar del segmento donde comienzan los datos.</li>
+<li>Reservado (6 bits): es un campo reservado para futuros usos. Su valor siempre es igual a cero.</li>
+<li>Indicadores (6 bit): Ofrecen información adicional::
+<ul>
+<li>URG: cuando su valor es 1, se trata de un segmento que se ha de procesar de manera urgente.</li>
+<li>ACK: cuando su valor es 1, el segmento consiste en un acuse de recibo.</li>
+<li>PSH: cuando su valor es 1, el paquete procesa los datos sin esperar a completar el segmento</li>
+<li>RST: cuando su valor es 1, se reanuda la conexión.</li>
+<li>SYN: cuando su valor es 1, se solicita un pedido para establecer una conexión.</li>
+<li>FIN: cuando su valor es 1, determina el fin de la conexión..</li>
+</ul>
+</li>
+<li>Ventana (16 bits): determina la cantidad de bytes que desea recibir el receptor sin acuse de recibo.</li>
+<li>Suma de control (24 bit): verifica la integridad del paquete a través de la comprobación de errores.</li>
+<li>Puntero urgente (16 bits): se utiliza para enviar datos urgentes e indica la ubicación de los datos que siguen a los urgentes.</li>
+<li>Opciones (bits variables): para definir funciones TCP que no forman parte del encabezado general.</li>
+<li>Relleno: su función es asegurar que la longitud de la cabecera sea múltiplo de 32 bits.</li>
+</ul>
+<p>Aplicaciones UDP   Y TCP</p>
+<p><img src="https://ccnadesdecero.es/wp-content/uploads/2017/11/Aplicaciones-que-usan-UDP.png" alt=""></p>
+<p><img src="https://ccnadesdecero.es/wp-content/uploads/2017/11/Aplicaciones-que-usan-TCP.png" alt=""></p>
+<h3 id="protocolo-http">Protocolo HTTP</h3>
+<p>¿Qué es el HTTP?
+Todas las direcciones en Internet comienzan por http:// (o https://). Estas siglas hacen referencia al protocolo HTTP, que es el que utiliza el navegador para acceder a una página web. ¿Qué es HTTP, en qué se diferencian las distintas versiones y qué otros conceptos están relacionados con el protocolo?</p>
+<p>¿Qué significa HTTP?
+HTTP son las siglas de Hypertext Transfer Protocol, es decir, Protocolo de Transferencia de Hipertexto. Este concepto es uno de los que Tim Berners-Lee desarrolló en el CERN (Suiza) y formaron la base de la World Wide Web: los otros dos son HTML y URI. Mientras que HTML (Hypertext Markup Language) define la estructura de las páginas web, la dirección URL (Uniform Resource Locator), una forma derivada del URI, define cómo se localiza a un recurso (p. ej., una página web) en Internet. El protocolo HTTP, en cambio, regula cómo el servidor envía este recurso al cliente.</p>
+<p>Pero ¿qué significa hipertexto, ese término que forma parte de las siglas HTTP y HTML? Se trata de un concepto que en realidad todos conocemos: el enlace a otros archivos, como los hiperenlaces que se usan en las páginas web para redirigir a otras páginas.</p>
+<p>¿Qué función cumple HTTP?
+Cuando escribes una dirección web en tu navegador y se abre la página que deseas, es porque tu navegador se ha comunicado con el servidor web por HTTP. Dicho de otra manera, el protocolo HTTP es el código o lenguaje en el que el navegador le comunica al servidor qué página quiere visualizar.</p>
+<p>¿Cómo funciona HTTP?
+La manera más fácil de explicar cómo funciona HTTP es describiendo cómo se abre una página web:</p>
+<p>En la barra de direcciones del navegador, el usuario teclea example.com.
+El navegador envía esa solicitud, es decir, la petición HTTP, al servidor web que administre el dominio example.com. Normalmente, la solicitud del cliente dice algo así como “Envíame este archivo”, pero también puede ser simplemente “¿Tienes este archivo?”.
+El servidor web recibe la solicitud HTTP, busca el archivo en cuestión (en nuestro ejemplo, la página de inicio de example.com, que corresponde al archivo index.html) y envía en primer lugar una cabecera o header. Esta cabecera le comunica al cliente, mediante un código de estado, el resultado de la búsqueda. Para conocer más detalles acerca de los códigos de estado, no te pierdas nuestro artículo al respecto.
+Si se ha encontrado el archivo solicitado y el cliente ha solicitado recibirlo (y no solo saber si existe), el servidor envía, tras el header, el message bodyo cuerpo del mensaje, es decir, el contenido solicitado: en nuestro ejemplo, el archivo index.html.
+El navegador recibe el archivo y lo abre en forma de página web.</p>
+<p><img src="https://www.ionos.es/digitalguide/fileadmin/_processed_/6/0/csm_diagram-of-http-communication-process-es_7dfe4cdc98.png" alt=""></p>
+<p>¿Para qué se usa HTTP?
+Cuando se creó, el protocolo HTTP solo servía para solicitar documentos HTML a un servidor web. Hoy en día, en cambio, se usa con gran variedad de fines:</p>
+<p>Los navegadores usan HTTP para solicitar cualquier tipo de archivo habitual en las webs modernas: de texto, de vídeo, de código de programación, etc.
+Los programas de aplicación utilizan HTTP para cargar archivos y actualizaciones de servidores lejanos.
+La API basada en REST es una solución que utiliza HTTP para controlar servicios web.
+Otra tecnología que se basa en HTTP es WebDAV.
+En la comunicación de máquina a máquina se utiliza HTTP como protocolo de comunicación entre servicios web.
+Los reproductores multimedia también utilizan HTTP.
+Las operaciones de acceso a bases de datos en la web y, por lo tanto, también las operaciones CRUD, pueden realizarse también mediante HTTP.</p>
+<h1 id="api-rest">API REST</h1>
+<p>API es el acrónimo de interfaz de programación de aplicaciones (application programming interface en inglés). Es un conjunto de reglas bien definidas que se utilizan para especificar formalmente la comunicación entre dos componentes de software.</p>
+<p>En la actualidad existen distintas clases de API, hablaremos acerca de las API REST</p>
+<p>Una API REST es una interfaz de comunicación entre sistemas de información que usa el protocolo de transferencia de hipertexto (hypertext transfer protocol o HTTP, por su siglas en inglés) para obtener datos o ejecutar operaciones sobre dichos datos en diversos formatos, como pueden ser XML o JSON.  <a href="https://es.wikipedia.org/wiki/JSON">JSON</a>  <a href="https://es.wikipedia.org/wiki/Extensible_Markup_Language">XML</a> <a href="https://es.wikipedia.org/wiki/HTML">HTML</a></p>
+<p>Se basa en el modelo cliente-servidor donde el cliente es el que solicita obtener los recursos o realizar alguna operación sobre dichos datos, mientras que el servidor es aquel ente que entrega o procesa dichos datos a solicitud del cliente.</p>
+<p>Criterios de API REST</p>
+<p>Existen diversos criterios para identificar si una API es REST o no. Algunos de ellos son que:</p>
+<ul>
+<li>Debe usar una arquitectura cliente-servidor.</li>
+<li>Las ejecuciones de la API no deben considerar el estado del cliente, el estado de peticiones anteriores o algún indicador almacenado que haga variar su comportamiento. La comunicación debe ser sin estado (stateless).</li>
+<li>Ha de estar orientada a recursos, usando las operaciones estándar de los verbos HTTP.</li>
+<li>Hace uso de la URL como identificador único de los recursos.</li>
+<li>Debe ser hipermedia: cuando se consulte un recurso, este debe contener links o hipervínculos de acciones o recursos que lo complementen.</li>
+</ul>
+<p>Diferencia entre RESTful y RESTless
+A menudo escuchamos estos términos al momento de diseñar, construir o interactuar con API. La diferencia es sencilla. Llamamos RESTful a todas aquellas API que cumplen completamente los criterios REST; mientras que llamamos RESTless a aquellas API que no cumplen del todo con los criterios REST.</p>
+<p>Por ejemplo, una API que utiliza el verbo POST para todas sus operaciones no es una API RESTful, si no una API RESTless.</p>
+<p>Los componentes primordiales que se describen en un API Spec son los siguientes:</p>
+<p>Accion (Verbo) HTTP
+Son aquellos verbos propios del protocolo HTTP que fueron tomados para definir operaciones muy puntuales y específicas sobre los recursos de la API.</p>
+<p>Los más utilizados son:</p>
+<ul>
+<li>
+<p>GET: listado de recursos. Detalle de un solo recurso.</p>
+</li>
+<li>
+<p>POST: creación de un recurso.</p>
+</li>
+<li>
+<p>PUT: modificación total de un recurso.</p>
+</li>
+<li>
+<p>PATCH: modificación parcial de un recurso.</p>
+</li>
+<li>
+<p>DELETE: eliminación de un recurso. En muchas ocasiones es un soft delete, es decir, no se elimina definitivamente un recurso sino que únicamente es marcado como eliminado o desactivado.</p>
+</li>
+<li>
+<p>URL orientada a recursos: la definición de las URL de los endpoint de la API están orientadas a recursos, es decir, a entidades que tienen coherencia dentro del contexto de la API. Por ejemplo, en una API para un sistema que administra libros sería fácil encontrar entidades como libros, autores, editoriales, colecciones, etc. Estas entidades las veremos reflejadas en URL orientadas a recursos que las representen, por ejemplo:</p>
+<ul>
+<li>/api-libros/v0/autores: identifica los recursos autores</li>
+<li>/api-libros/v0/autores/{id-autor}: identifica un recurso autor</li>
+<li>/api-libros/v0/autores/{id-autor}/libros: identifica los libros de un autor en específico</li>
+<li>/api-libros/v0/libros: identifica los recursos libros</li>
+<li>/api-libros/v0/editoriales: identifica los recursos editoriales</li>
+<li>/api-libros/v0/editoriales/{id-editorial}/libros: identifica los libros de una editorial</li>
+</ul>
+</li>
+</ul>
+<p>HTTP Status
+Son aquellos estatus de respuesta propios del protocolo HTTP que fueron tomados para informar sobre el resultado de la operación solicitada. Los más comunes en API REST son:</p>
+<p>200 - OK
+201 - Created
+204 - No Content
+400 - Bad Request
+401 - Unauthorized
+403 - Forbidden
+404 - Not Found
+500 - Internal Server Error</p>
+<p>A continuación, adjuntamos una tabla de ejemplo para ilustrar estos conceptos:</p>
+<table>
+<thead>
+<tr>
+<th>VERBO HTTP</th>
+<th>URL DEL RECURSO</th>
+<th>ACCIÓN</th>
+<th>HTTP STATUS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/libros</td>
+<td>Obtener una lista de libros</td>
+<td>200 - OK</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>204 - Not Content: cuando no hay libros a listar</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/libros/{id-libro}</td>
+<td>Obtener detalle de un libro</td>
+<td>200 - OK</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>404 - Not Found: cuando no existe el libro buscado</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/libros</td>
+<td>Crear un recurso nuevo libro</td>
+<td>201 - Created</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/libros/{id-libro}</td>
+<td>Modificar un recurso libro completamente</td>
+<td>200 - OK</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>400 - Bad request: cuando algún parámetro enviado no cumple con las reglas</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td>/libros/{id-libro}</td>
+<td>Modificar un recurso libro parcialmente</td>
+<td>200 - OK</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>201 - Created: si el recurso a modificar no existe se crea en automático</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>400 - Bad request: cuando algún parámetro enviado no cumple con las reglas</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/libros/{id-libro}</td>
+<td>Eliminar un recurso libro</td>
+<td>201 - Not Content: es el status standard a regresar en un verbo DELETE</td>
+</tr>
+</tbody>
+</table>
+<p>Para realizar practicas  de ordenes GET,POST....  recomendamos el siguiente software    https://insomnia.rest/download   ( la version gratuita)</p>
+
+</body>
+</html>
