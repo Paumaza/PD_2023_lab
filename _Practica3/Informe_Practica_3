@@ -61,7 +61,7 @@ Creació del loop infinit. Al qual li demanem que ens imprimeix per pantalla “
 
 
 
-
+'
 Ejercicio Práctico 2
 Creació de tasca d’engegat del LED
 Bool LED = False;
@@ -73,7 +73,7 @@ void LEDon(void * LED){
 digitalWrite(led1, HIGH);
 LED = True;}
    // Pause the task for 500ms
-   vTaskDelay(500 / portTICK_PERIOD_MS);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
  }
  // delete a task when finish, this will never happen because this is infinity loop*/
  vTaskDelete( NULL );
@@ -87,7 +87,7 @@ void LEDoff(void * LED){
 digitalWrite(led1, LOW);
 LED = False;}
    // Pause the task for 500ms
-   vTaskDelay(500 / portTICK_PERIOD_MS);
+   vTaskDelay(800 / portTICK_PERIOD_MS);
  }
  // delete a task when finish, this will never happen because this is infinity loop*/
  vTaskDelete( NULL );
