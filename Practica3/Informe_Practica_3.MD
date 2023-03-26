@@ -3,7 +3,7 @@ Puede hacer los tres sincrónicamente, uno tras otro. Pero, ¿qué sucede si est
 Ja que la pantalla tarda uns segons en actualitzar-se, totes les tasques es realitzen abans que es pugui actualitzar la pantalla, i per tant, que el programa acabi d’executar-se sense haver mostrat cap valor per la pantalla.
 
 
-Ejercicio Práctico 1
+## Ejercicio Práctico 1
 Descriure la sortida del port sèrie i comentar el funcionament:
 
 
@@ -47,22 +47,7 @@ void loop() {
 }
 Creació del loop infinit. Al qual li demanem que ens imprimeix per pantalla “this is  ESP32 task” cada segon. on posteriorment s’ha demanat la funció que cada mig segon s'encengui i led i després s’apagui en un altre mig segon. 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'
-Ejercicio Práctico 2
+## Ejercicio Práctico 2
 Creació de tasca d’engegat del LED
 Bool LED = False;
 

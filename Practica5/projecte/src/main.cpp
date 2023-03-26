@@ -1,5 +1,12 @@
 #include <Wire.h>
 #include <AHT10.h>
+#include <LiquidCrystal_I2C.h>
+
+#define SDA 13
+#define SCL 14
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
 #if defined(ESP8266)
 #include <ESP8266WiFi.h>
 #endif
@@ -18,6 +25,12 @@ AHT10 aht10(AHT10_ADDRESS_0X38, AHT10_SENSOR); //sensor address, sensor type
 /**************************************************************************/
 void setup()
 {
+  Wire.begin(SDA, SCL);
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("Hello world!");
+
   #if defined(ESP8266)
   WiFi.persistent(false);  //disable saving wifi config into SDK flash area
   WiFi.forceSleepBegin();  //disable AP & station by calling "WiFi.mode(WIFI_OFF)" & put modem to sleep
@@ -32,22 +45,21 @@ void setup()
 
     delay(5000);
   }
-
-  Serial.println(F("AHT10 OK"));
-
-  //Wire.setClock(400000); //experimental I2C speed! 400KHz, default 100KHz
+  Serial.println(F("AHT10 OK"));  
 }
 
 
-/**************************************************************************/
-/*
-    loop()
-     Main loop
-*/
-/**************************************************************************/
 void loop()
 {
-  /* DEMO - 1, every temperature or humidity call will read 6-bytes over I2C, total 12-bytes */
+  lcd.setCursor(0, 1);
+  lcd.print("Counter: ");
+  lcd.print(millis() / 1000);
+
+  delay(1000);
+
+  
+
+  // DEMO - 1, every temperature or humidity call will read 6-bytes over I2C, total 12-bytes 
   Serial.println();
   Serial.println(F("DEMO 1: read 12-bytes"));
 
@@ -86,7 +98,7 @@ void loop()
 
   delay(2000); //measurement with high frequency leads to heating of the sensor, see NOTE
 
-  /* DEMO - 2, temperature call will read 6-bytes via I2C, humidity will use same 6-bytes */
+  // DEMO - 2, temperature call will read 6-bytes via I2C, humidity will use same 6-bytes 
   Serial.println();
   Serial.println(F("DEMO 2: read 6-byte"));
 
