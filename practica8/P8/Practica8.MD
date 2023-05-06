@@ -181,7 +181,7 @@ La conexion la realizaremos a traves del puerto serie 2 del esp32 utilizando una
 
 Esta primera practica es la unica obligatoria  y no requiere de ningun hardware adicional  ; solo la utilizacion del ESP32  .
 
-Sin embargo debido asu simplicidad no se indicara ningun codigo y se pide a cada estudiante que genere su codigo propio.
+Sin embargo debido a su simplicidad no se indicara ningun codigo y se pide a cada estudiante que genere su codigo propio.
 
 
 
@@ -191,7 +191,7 @@ Enunciado :  Realizar  un bucle de comunicacion de forma que los datos que se ma
 En el informe de la practica debe incluir
 
 * Codigo fuente operativo 
-* descricion del mismo 
+* descripcion del mismo 
 * salidas y entradas de consola 
 
 
