@@ -1,137 +1,103 @@
-#include <Wire.h>
+#include <Tone32.h>
+#include <Ultrasonic.h>
+#include <I2S.h>
 #include <WiFi.h>
-#include <WiFiUdp.h>
-#include <OSCMessage.h>
-#include <OSCBundle.h>
-#include <NewPing.h>
+#include <WiFiClientSecure.h>
 #include <SPI.h>
-#include <Audio.h>
 #include <SD.h>
-#include <FS.h>
-#include <AudioOutputI2S.h>
+#include <SD_MMC.h>
+#include <SPIFFS.h>
+#include <FFat.h>
 
-// Replace with your network credentials
-const char* ssid = "iPhone de: Pau";
-const char* password = "Paumaza12";
+#define TRIGGER_PIN_FREQ 14  // GPIO pin connected to the frequency ultrasonic sensor's trigger pin
+#define ECHO_PIN_FREQ 12     // GPIO pin connected to the frequency ultrasonic sensor's echo pin
 
-// Replace with the IP address and port of your computer running the OSC server
-const char* oscAddress = "192.168.1.100";
-const int oscPort = 12345;
+#define TRIGGER_PIN_AMP 27   // GPIO pin connected to the amplitude ultrasonic sensor's trigger pin
+#define ECHO_PIN_AMP 33      // GPIO pin connected to the amplitude ultrasonic sensor's echo pin
 
-// Ultrasonic sensor 1 pins
-const int TRIGGER1_PIN = 12;
-const int ECHO1_PIN = 14;
+#define AMP_MAX_DISTANCE 100 // Maximum distance (in centimeters) for amplitude control
+#define FREQ_MAX_DISTANCE 50 // Maximum distance (in centimeters) for frequency control
 
-// Ultrasonic sensor 2 pins
-const int TRIGGER2_PIN = 25;
-const int ECHO2_PIN = 26;
+#define SPEAKER_PIN 22       // GPIO pin connected to the MAX98357A amplifier's input pin
+#define LRC_PIN 25           // GPIO pin connected to the MAX98357A amplifier's LRC pin
+#define BCLK_PIN 26          // GPIO pin connected to the MAX98357A amplifier's BCLK pin
 
-// Thresholds for adjusting the range
-const int RANGE_MIN = 10;    // Minimum range in centimeters
-const int RANGE_MAX = 200;   // Maximum range in centimeters
+#define BUZZER_CHANNEL 0
 
-// Frequency modulation settings
-const int FREQ_MIN = 200;    // Minimum frequency in Hz
-const int FREQ_MAX = 2000;   // Maximum frequency in Hz
 
-// Amplitude modulation settings
-const int AMP_MIN = 0;       // Minimum amplitude
-const int AMP_MAX = 255;     // Maximum amplitude
+Ultrasonic ultrasonicFreq(TRIGGER_PIN_FREQ, ECHO_PIN_FREQ);
+Ultrasonic ultrasonicAmp(TRIGGER_PIN_AMP, ECHO_PIN_AMP);
 
-// Variables for storing sensor readings
-int distance1 = 0;
-int distance2 = 0;
-int frequency = 0;
-int amplitude = 0;
 
-const int I2S_SCK = 21;
-const int I2S_WS = 19;
-const int I2S_SD = 22;
+const int frequency = 440; // frequency of square wave in Hz
+const int amplitude = 500; // amplitude of square wave
+const int sampleRate = 8000; // sample rate in Hz
+const int bps = 16;
 
-// Ultrasonic sensor objects
-NewPing sonar1(TRIGGER1_PIN, ECHO1_PIN, RANGE_MAX);
-NewPing sonar2(TRIGGER2_PIN, ECHO2_PIN, RANGE_MAX);
+const int halfWavelength = (sampleRate / frequency); // half wavelength of square wave
 
-AudioOutputI2S audioOutput;
+short sample = amplitude; // current sample value
+int count = 0;
 
-int getUltrasonicDistance(NewPing& sonar) {
-  delay(50); // Delay before taking a measurement
-  int distance = sonar.ping_cm(); // Measure the distance in centimeters
-  return distance;
-}
+i2s_mode_t mode = I2S_PHILIPS_MODE; // I2S decoder is needed
+// i2s_mode_t mode = ADC_DAC_MODE; // Audio amplifier is needed
 
-void sendOSC(const char* address, int value) {
-  WiFiUDP udp;
-  udp.beginPacket(oscAddress, oscPort);
-  OSCBundle bundle;
-  OSCMessage msg(address);
-  msg.add(value);
-  bundle.add(msg);
-  bundle.send(udp);
-  udp.endPacket();
-}
+// Mono channel input
+// This is ESP specific implementation -
+//   samples will be automatically copied to both channels inside I2S driver
+//   If you want to have true mono output use I2S_PHILIPS_MODE and interlay
+//   second channel with 0-value samples.
+//   The order of channels is RIGH followed by LEFT
+//i2s_mode_t mode = I2S_RIGHT_JUSTIFIED_MODE; // I2S decoder is needed
 
 void setup() {
-  // Initialize serial communication
   Serial.begin(115200);
 
-  // Connect to Wi-Fi
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
-    Serial.println("Connecting to WiFi...");
+  if (!I2S.begin(mode, sampleRate, bps)) {
+    Serial.println("Failed to initialize I2S!");
+    while (1); // do nothing
   }
-  Serial.println("Connected to WiFi");
 
-  // Initialize audio output
-  i2s_begin(I2S_SCK, I2S_WS, I2S_SD);
+  pinMode(SPEAKER_PIN, OUTPUT);
+  pinMode(LRC_PIN, OUTPUT);
+  pinMode(BCLK_PIN, OUTPUT);
+
+  // Initialize ToneAC library
+  // ToneAC.begin(SPEAKER_PIN);
 }
 
 void loop() {
-  // Read distance from ultrasonic sensor 1
-  distance1 = getUltrasonicDistance(sonar1);
-  if (distance1 < RANGE_MIN) {
-    distance1 = RANGE_MIN;
-  } else if (distance1 > RANGE_MAX) {
-    distance1 = RANGE_MAX;
-  }
+  float freqDistance = ultrasonicFreq.read() / 58.0; // Convert the echo time to distance in centimeters
+  float ampDistance = ultrasonicAmp.read() / 58.0;   // Convert the echo time to distance in centimeters
+  Serial.print("read ultrasonic sensor ok");
 
-  // Read distance from ultrasonic sensor 2
-  distance2 = getUltrasonicDistance(sonar2);
-  if (distance2 < RANGE_MIN) {
-    distance2 = RANGE_MIN;
-  } else if (distance2 > RANGE_MAX) {
-    distance2 = RANGE_MAX;
-  }
-
-  // Map the sensor readings to frequency and amplitude values
-  frequency = map(distance1, RANGE_MIN, RANGE_MAX, FREQ_MIN, FREQ_MAX);
-  amplitude = map(distance2, RANGE_MIN, RANGE_MAX, AMP_MIN, AMP_MAX);
-
-  // Send OSC message with frequency and amplitude values
-  sendOSC("/theremin/frequency", frequency);
-  sendOSC("/theremin/amplitude", amplitude);
-
-  // Generate the audio sample
-  float phaseIncrement = 2 * PI * frequency / 44100.0;
-  for (int i = 0; i < 44100; i++) {
-    float sample = sin(i * phaseIncrement) * amplitude;
-
-    // Output the sample to the amplifier
-    i2s_write_sample(I2S_SD, sample);
-  
-
-
-
-  // Print sensor readings and mapped values
+  // Map the distance values to the desired range for frequency and amplitude
+  int freq = map(freqDistance, 0, FREQ_MAX_DISTANCE, 100, 1000);
+  int amp = map(ampDistance, 0, AMP_MAX_DISTANCE, 0, 255);
   Serial.print("Distance 1: ");
-  Serial.println(distance1);
+  Serial.println(freqDistance);
   Serial.print("Distance 2: ");
-  Serial.println(distance2);
+  Serial.println(ampDistance);
   Serial.print("Frequency: ");
-  Serial.println(frequency);
+  Serial.println(freq);
   Serial.print("Amplitude: ");
-  Serial.println(amplitude);
+  Serial.println(amp);
 
-  delay(100);
+  // Generate the audio tone with the calculated frequency and amplitude
+  if (count % halfWavelength == 0 ) {
+      // invert the sample every half wavelength count multiple to generate square wave
+      sample = -1 * sample;
+    }
+
+  if(mode == I2S_PHILIPS_MODE || mode == ADC_DAC_MODE){ // write the same sample twice, once for Right and once for Left channel
+    I2S.write(sample); // Right channel
+    I2S.write(sample); // Left channel
+    }
+  else if(mode == I2S_RIGHT_JUSTIFIED_MODE || mode == I2S_LEFT_JUSTIFIED_MODE){
+    // write the same only once - it will be automatically copied to the other channel
+    I2S.write(sample);
+  }
+
+  // increment the counter for the next sample
+  count++;
 }
