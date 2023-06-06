@@ -16,7 +16,7 @@
 #define ECHO_PIN_AMP 33      // GPIO pin connected to the amplitude ultrasonic sensor's echo pin
 
 #define AMP_MAX_DISTANCE 100 // Maximum distance (in centimeters) for amplitude control
-#define FREQ_MAX_DISTANCE 50 // Maximum distance (in centimeters) for frequency control
+#define FREQ_MAX_DISTANCE 100 // Maximum distance (in centimeters) for frequency control
 
 #define SPEAKER_PIN 22       // GPIO pin connected to the MAX98357A amplifier's input pin
 #define LRC_PIN 25           // GPIO pin connected to the MAX98357A amplifier's LRC pin
@@ -67,8 +67,8 @@ void setup() {
 }
 
 void loop() {
-  float freqDistance = ultrasonicFreq.read() / 58.0; // Convert the echo time to distance in centimeters
-  float ampDistance = ultrasonicAmp.read() / 58.0;   // Convert the echo time to distance in centimeters
+  float freqDistance = ultrasonicFreq.read(); // 5.80; // Convert the echo time to distance in centimeters
+  float ampDistance = ultrasonicAmp.read(); // 5.80;   // Convert the echo time to distance in centimeters
   Serial.print("read ultrasonic sensor ok");
 
   // Map the distance values to the desired range for frequency and amplitude
