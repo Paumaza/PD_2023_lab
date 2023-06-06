@@ -28,7 +28,6 @@
 Ultrasonic ultrasonicFreq(TRIGGER_PIN_FREQ, ECHO_PIN_FREQ);
 Ultrasonic ultrasonicAmp(TRIGGER_PIN_AMP, ECHO_PIN_AMP);
 
-
 const int frequency = 440; // frequency of square wave in Hz
 const int amplitude = 500; // amplitude of square wave
 const int sampleRate = 8000; // sample rate in Hz
