@@ -99,9 +99,12 @@ void handleRootRequest(AsyncWebServerRequest* request) {
   html += "calculateButton.addEventListener('click', function() {";
   html += "const carWidth = parseInt(carWidthInput.value);";
   html += "const carLength = parseInt(carLengthInput.value);";
-  html += "const responseData = {";
-  html += "floor: 2,";
-  html += "spot: 3";
+  html += "const url = `/calculate?width=${carWidth}&length=${carLength}`;";
+  html += "fetch(url).then(response => response.json()).then(data => {";
+  html += "bestFitContainer.textContent = `Best Fit: Floor ${data.floor}, Spot ${data.spot}`;";
+  html += "updateParkingSpot(carWidth, carLength);";
+  html += "});";
+  html += "});";
   html += "};";
   html += "// Display the best fit result";
   html += "bestFitContainer.textContent = `Best Fit: Floor ${responseData.floor}, Spot ${responseData.spot}`;";
@@ -132,9 +135,6 @@ void handleRootRequest(AsyncWebServerRequest* request) {
   html += "<h1>Back Distance:</h1>";
   html += "<p>" + String(getDistance(backTriggerPin, backEchoPin)) + " cm</p>";
   html += "<h1>Car Size Fit:</h1>";
-  //html += "<p>Floor 1: " + String((floor1SpotWidth >= carWidth && floor1SpotLength >= carLength) ? 1 : 0) + "</p>";
-  //html += "<p>Floor 2: " + String((floor2SpotWidth >= carWidth && floor2SpotLength >= carLength) ? 1 : 0) + "</p>";
-  //html += "<p>Floor 3: " + String((floor3SpotWidth >= carWidth && floor3SpotLength >= carLength) ? 1 : 0) + "</p>";
   html += "<h2>Enter Car Dimensions:</h2>";
   html += "<input type='number' id='car-width' placeholder='Car Width'>";
   html += "<input type='number' id='car-length' placeholder='Car Length'>";
@@ -144,6 +144,21 @@ void handleRootRequest(AsyncWebServerRequest* request) {
   html += "</body></html>";
 
   request->send(200, "text/html", html);
+}
+
+void handleCalculateRequest(AsyncWebServerRequest* request) {
+  String widthParam = request->getParam("width")->value();
+  String lengthParam = request->getParam("length")->value();
+
+  int carWidth = widthParam.toInt();
+  int carLength = lengthParam.toInt();
+
+  std::pair<int, int> result = bestSpot(parking, carLength, carWidth);
+  int floor = result.first;
+  int spot = result.second;
+
+  String response = "{\"floor\":" + String(floor) + ",\"spot\":" + String(spot) + "}";
+  request->send(200, "application/json", response);
 }
 
 void setup() {
@@ -194,6 +209,7 @@ void setup() {
   Serial.println(WiFi.localIP());// this will display the Ip address which should be entered into your browser
 
   server.on("/", HTTP_GET, handleRootRequest);
+  server.on("/calculate", HTTP_GET, handleCalculateRequest);
 
   server.begin();
   Serial.println("HTTP server started");
