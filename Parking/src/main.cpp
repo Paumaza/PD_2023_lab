@@ -219,13 +219,11 @@ void setup() {
 
 
 void loop() {
-  
   // Get front and back distances
   float frontDistance = getDistance(frontTriggerPin, frontEchoPin);
   float backDistance = getDistance(backTriggerPin, backEchoPin);
 
   // Calculate car size fit on each floor
-
   std::pair<int, int> result = bestSpot(parking, static_cast<int>(frontDistance), static_cast<int>(backDistance));
   int FinalFloor = result.first;
   int FinalSpot = result.second;
