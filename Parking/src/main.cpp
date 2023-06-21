@@ -244,7 +244,7 @@ void loop() {
   lcd.clear();
 
   // Display car size fit
-  displayOnLCD("Car Size Fit:", 0, 0);
+  displayOnLCD("Best Fit:", 0, 0);
   delay(1000);
   lcd.clear();
 
