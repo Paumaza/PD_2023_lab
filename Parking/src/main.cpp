@@ -2,14 +2,13 @@
 #include <ESPAsyncWebServer.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-
-
+#include <map>
 
 // Pins for the ultrasonic sensors
-const int frontTriggerPin = 18;
-const int frontEchoPin = 19;
-const int backTriggerPin = 12;
-const int backEchoPin = 14;
+const int frontTriggerPin = 33;
+const int frontEchoPin = 32;
+const int backTriggerPin = 14;
+const int backEchoPin = 12;
 
 // LCD screen dimensions
 const int lcdColumns = 16;
@@ -26,12 +25,20 @@ const int carWidth = 200;  // In centimeters
 const int carLength = 500; // In centimeters
 
 // Parking spot dimensions (example values)
-const int floor1SpotWidth = 250;  // In centimeters
-const int floor1SpotLength = 500; // In centimeters
-const int floor2SpotWidth = 300;  // In centimeters
-const int floor2SpotLength = 600; // In centimeters
-const int floor3SpotWidth = 350;  // In centimeters
-const int floor3SpotLength = 700; // In centimeters
+struct Spot {
+    int length;
+    int width;
+};
+
+struct Floor {
+    Spot spot[3];
+};
+
+struct Parking {
+    Floor floor[3];
+};
+
+Parking parking;
 
 // Server
 const char* ssid     = "PauMaza";
@@ -61,6 +68,16 @@ void displayOnLCD(const String& text, int column, int row) {
   lcd.print(text);
 }
 
+std::pair<int, int> bestSpot(const Parking& parking, int carLength, int carWidth) {
+  for(int floor = 0; floor < 3; floor++){
+    for(int spot = 0; spot < 3; spot++){
+      if(carLength <=  parking.floor[floor].spot[spot].length && carWidth <= parking.floor[floor].spot[spot].width) {
+        return std::make_pair(floor, spot);
+      }
+    }
+  }
+  return std::make_pair(-1, -1);
+}
 
 void handleRootRequest(AsyncWebServerRequest* request) {
   String html = "<html><head>";
@@ -82,9 +99,6 @@ void handleRootRequest(AsyncWebServerRequest* request) {
   html += "calculateButton.addEventListener('click', function() {";
   html += "const carWidth = parseInt(carWidthInput.value);";
   html += "const carLength = parseInt(carLengthInput.value);";
-  html += "// Make an AJAX request to the server to calculate the best fit";
-  html += "// You can use fetch() or XMLHttpRequest to send the request";
-  html += "// Example response data (replace this with the actual response from the server)";
   html += "const responseData = {";
   html += "floor: 2,";
   html += "spot: 3";
@@ -118,9 +132,9 @@ void handleRootRequest(AsyncWebServerRequest* request) {
   html += "<h1>Back Distance:</h1>";
   html += "<p>" + String(getDistance(backTriggerPin, backEchoPin)) + " cm</p>";
   html += "<h1>Car Size Fit:</h1>";
-  html += "<p>Floor 1: " + String((floor1SpotWidth >= carWidth && floor1SpotLength >= carLength) ? 1 : 0) + "</p>";
-  html += "<p>Floor 2: " + String((floor2SpotWidth >= carWidth && floor2SpotLength >= carLength) ? 1 : 0) + "</p>";
-  html += "<p>Floor 3: " + String((floor3SpotWidth >= carWidth && floor3SpotLength >= carLength) ? 1 : 0) + "</p>";
+  //html += "<p>Floor 1: " + String((floor1SpotWidth >= carWidth && floor1SpotLength >= carLength) ? 1 : 0) + "</p>";
+  //html += "<p>Floor 2: " + String((floor2SpotWidth >= carWidth && floor2SpotLength >= carLength) ? 1 : 0) + "</p>";
+  //html += "<p>Floor 3: " + String((floor3SpotWidth >= carWidth && floor3SpotLength >= carLength) ? 1 : 0) + "</p>";
   html += "<h2>Enter Car Dimensions:</h2>";
   html += "<input type='number' id='car-width' placeholder='Car Width'>";
   html += "<input type='number' id='car-length' placeholder='Car Length'>";
@@ -133,6 +147,28 @@ void handleRootRequest(AsyncWebServerRequest* request) {
 }
 
 void setup() {
+
+  parking.floor[0].spot[0].length = 20;
+  parking.floor[0].spot[0].width = 40;
+  parking.floor[0].spot[1].length = 24;
+  parking.floor[0].spot[1].width = 45;
+  parking.floor[0].spot[2].length = 28;
+  parking.floor[0].spot[2].width = 50;
+
+  parking.floor[1].spot[0].length = 40;
+  parking.floor[1].spot[0].width = 60;
+  parking.floor[1].spot[1].length = 44;
+  parking.floor[1].spot[1].width = 65;
+  parking.floor[1].spot[2].length = 48;
+  parking.floor[1].spot[2].width = 69;
+
+  parking.floor[2].spot[0].length = 60;
+  parking.floor[2].spot[0].width = 70;
+  parking.floor[2].spot[1].length = 64;
+  parking.floor[2].spot[1].width = 75;
+  parking.floor[2].spot[2].length = 100;
+  parking.floor[2].spot[2].width = 800;
+
   Serial.begin(115200);
   pinMode(frontTriggerPin, OUTPUT);
   pinMode(frontEchoPin, INPUT);
@@ -166,42 +202,41 @@ void setup() {
 
 
 void loop() {
-  // Server
-  //server.serveStatic("/index.html");
-
+  
   // Get front and back distances
   float frontDistance = getDistance(frontTriggerPin, frontEchoPin);
   float backDistance = getDistance(backTriggerPin, backEchoPin);
 
   // Calculate car size fit on each floor
-  int floor1Fit = (floor1SpotWidth >= carWidth && floor1SpotLength >= carLength) ? 1 : 0;
-  int floor2Fit = (floor2SpotWidth >= carWidth && floor2SpotLength >= carLength) ? 1 : 0;
-  int floor3Fit = (floor3SpotWidth >= carWidth && floor3SpotLength >= carLength) ? 1 : 0;
 
+  std::pair<int, int> result = bestSpot(parking, static_cast<int>(frontDistance), static_cast<int>(backDistance));
+  int FinalFloor = result.first;
+  int FinalSpot = result.second;
   // Clear LCD screen
   lcd.clear();
 
   // Display front distance
-  displayOnLCD("Front:", 0, 0);
+  displayOnLCD("Width:", 0, 0);
   displayOnLCD(String(frontDistance) + " cm", 0, 1);
   delay(1000);
+  lcd.clear();
 
   // Display back distance
-  displayOnLCD("Back:", 0, 0);
+  displayOnLCD("Length:", 0, 0);
   displayOnLCD(String(backDistance) + " cm", 0, 3);
   delay(1000);
+  lcd.clear();
 
   // Display car size fit
   displayOnLCD("Car Size Fit:", 0, 0);
-  displayOnLCD("Floor 1: " + String(floor1Fit), 0, 1);
   delay(1000);
-  displayOnLCD("Floor 2: " + String(floor2Fit), 0, 1);
-  delay(1000);
-  displayOnLCD("Floor 3: " + String(floor3Fit), 0, 1);
-
   lcd.clear();
 
-  // You can add additional logic here to determine the best fit based on the given criteria
+  displayOnLCD("Floor " + String(FinalFloor), 0, 0);
+  displayOnLCD("Spot " + String(FinalSpot), 0, 1);
+  delay(1000);
+
+  lcd.clear();
 
   delay(1000); // Adjust the delay as per your needs
 }
