@@ -206,7 +206,8 @@ void setup() {
   Serial.println("");
   Serial.println("WiFi connected.");
   Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());// this will display the Ip address which should be entered into your browser
+  Serial.println(WiFi.localIP());// this will display the Ip address
+                                //which should be entered into your browser
 
   server.on("/", HTTP_GET, handleRootRequest);
   server.on("/calculate", HTTP_GET, handleCalculateRequest);
